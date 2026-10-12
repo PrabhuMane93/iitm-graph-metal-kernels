@@ -2,6 +2,8 @@
 
 Metal GPU implementations of three graph algorithms from Neo4j's Graph Data Science (GDS) library, benchmarked against a live Neo4j GDS instance as the CPU baseline, on large SNAP graphs. See the parent [`../TASK.md`](../TASK.md) and [`../RESOURCES.md`](../RESOURCES.md) for full context, algorithm choices, and dataset candidates.
 
+Full report: [GPU-Accelerated Graph Analytics on Apple Silicon — Methodology and Benchmarks Against Neo4j GDS](https://app.notion.com/p/GPU-Accelerated-Graph-Analytics-on-Apple-Silicon-Methodology-and-Benchmarks-Against-Neo4j-GDS-3f74fe7d13398165a3d9ee265d8857e0?source=copy_link)
+
 ## Build order
 
 1. **PageRank** — done. CSR-based, double-buffered, no atomics.
