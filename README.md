@@ -15,7 +15,7 @@ Full report: [GPU-Accelerated Graph Analytics on Apple Silicon — Methodology a
 - `src/graph.rs` — SNAP edge-list loader, builds forward + reverse CSR.
 - `src/gpu/` — Metal GPU implementations, using the same `objc2-metal` bindings as the sibling [metal-llm-kernels](https://github.com/PrabhuMane93/metal-llm-kernels) project.
 - `src/shaders/*.metal` — MSL kernel source, compiled from embedded strings at runtime (`newLibraryWithSource_options_error`), no `.metallib` build step needed.
-- `data/` — downloaded SNAP graph files (gitignored; fetch via `scripts/`).
+- `data/` — downloaded SNAP graph files (gitignored; download and convert via convert_to_neo4j.py).
 - `results/` — per-algorithm benchmark CSVs (gitignored by default; commit real results deliberately).
 
 ## Dataset setup
