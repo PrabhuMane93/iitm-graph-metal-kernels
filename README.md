@@ -42,14 +42,6 @@ python3 testbench/run_benchmarks.py
 
 Builds the release binary, runs it against every `.txt` file in `data/`, and appends one row per graph to `results/pagerank_gpu.csv`, `results/bfs_gpu.csv`, and `results/triangle_count_gpu.csv`.
 
-## Running
-
-```
-cargo run --release -- path/to/graph-edgelist.txt
-```
-
-Loads the graph, runs PageRank and BFS on CPU then on GPU (Triangle Counting is GPU-only; see above), prints timing + speedup + a correctness check for each (max abs diff for PageRank, mismatched levels for BFS), and appends one row per algorithm to `results/<algorithm>.csv`.
-
 ## Correctness
 
 Every GPU kernel is checked against an independent implementation of the same algorithm: PageRank and BFS against the CPU reference in this repo, Triangle Counting against Neo4j GDS's `gds.triangleCount.stats`. Across all ten benchmark graphs, every GPU result matches exactly — zero error on every run.
