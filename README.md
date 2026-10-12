@@ -13,13 +13,34 @@ Full report: [GPU-Accelerated Graph Analytics on Apple Silicon — Methodology a
 ## Layout
 
 - `src/graph.rs` — SNAP edge-list loader, builds forward + reverse CSR.
-- `src/cpu/` — single-threaded reference implementations for PageRank and BFS, used only as a local correctness cross-check, not as the reported baseline. There is no CPU Triangle Counting implementation here: Neo4j GDS's `gds.triangleCount.stats` is the tested baseline for that algorithm (see Results).
 - `src/gpu/` — Metal GPU implementations, using the same `objc2-metal` bindings as the sibling [metal-llm-kernels](https://github.com/PrabhuMane93/metal-llm-kernels) project.
 - `src/shaders/*.metal` — MSL kernel source, compiled from embedded strings at runtime (`newLibraryWithSource_options_error`), no `.metallib` build step needed.
 - `data/` — downloaded SNAP graph files (gitignored; fetch via `scripts/`).
 - `results/` — per-algorithm benchmark CSVs (gitignored by default; commit real results deliberately).
 
-Raw SNAP datasets for all ten benchmark graphs are downloaded to [`../dataset_preparation`](../dataset_preparation) (a sibling folder, outside this repo). That folder also holds the script that converts an edge list into the node/relationship CSVs used for `neo4j-admin database import`. Those raw dataset files are large and are not committed to this repo.
+## Dataset setup
+
+All ten SNAP edge-list files used for benchmarking are hosted here (large, not committed to this repo): [Google Drive folder](https://drive.google.com/drive/folders/1ZS7AL_u8DSiYeqpGBHP-4JSeORwJqoU-?usp=sharing).
+
+1. Download the edge-list files you want from that folder into `data/` (e.g. `data/com-youtube.ungraph.txt`).
+2. Run the Rust kernels directly against a raw edge list — no conversion needed:
+   ```
+   cargo run --release -- data/com-youtube.ungraph.txt
+   ```
+3. To reproduce the Neo4j GDS CPU baseline instead, convert every `.txt` file in `data/` to import-ready CSVs in one pass, then bulk-import each graph:
+   ```
+   python3 data/convert_to_neo4j.py
+   neo4j-admin database import full --nodes=data/com-youtube.ungraph-csv/nodes_header.csv,data/com-youtube.ungraph-csv/nodes.csv --relationships=data/com-youtube.ungraph-csv/rels_header.csv,data/com-youtube.ungraph-csv/rels.csv -- neo4j
+   ```
+   Running `data/convert_to_neo4j.py` with no arguments scans `data/` and writes each graph's CSVs to its own `data/<graph>-csv/` folder.
+
+## Testbench
+
+```
+python3 testbench/run_benchmarks.py
+```
+
+Builds the release binary, runs it against every `.txt` file in `data/`, and appends one row per graph to `results/pagerank_gpu.csv`, `results/bfs_gpu.csv`, and `results/triangle_count_gpu.csv`.
 
 ## Running
 
