@@ -6,9 +6,9 @@ Full report: [GPU-Accelerated Graph Analytics on Apple Silicon — Methodology a
 
 ## Build order
 
-1. **PageRank** — done. CSR-based, double-buffered, no atomics.
-2. **BFS** — done. Level-synchronous frontier expansion, atomic compare-and-swap claims on out-neighbors.
-3. **Triangle Counting** — done. Forward-oriented adjacency (`Graph::forward_adjacency`) + one thread per forward edge (not per vertex, to avoid a hub vertex's work serializing onto a single thread), choosing a linear merge or a binary search per edge depending on how skewed the two neighbor lists are.
+1. **PageRank** — CSR-based, double-buffered, no atomics.
+2. **BFS** — Level-synchronous frontier expansion, atomic compare-and-swap claims on out-neighbors.
+3. **Triangle Counting** — Forward-oriented adjacency (`Graph::forward_adjacency`) + one thread per forward edge (not per vertex, to avoid a hub vertex's work serializing onto a single thread), choosing a linear merge or a binary search per edge depending on how skewed the two neighbor lists are.
 
 ## Layout
 
