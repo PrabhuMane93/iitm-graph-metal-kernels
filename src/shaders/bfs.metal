@@ -1,11 +1,8 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// One thread per vertex, one dispatch per BFS level. If the vertex is in
-// the current frontier, it tries to claim each unvisited out-neighbor via
-// an atomic compare-and-swap on `level` (-1 -> next_level). Newly claimed
-// vertices are marked in next_frontier, and claimed_count is bumped so the
-// host knows when the frontier has gone empty (i.e. BFS is done).
+// One thread per vertex per level; claims unvisited out-neighbors via
+// atomic CAS on level, bumping claimed_count so the host detects an empty frontier.
 kernel void bfs_iteration(
     device const uint*   out_row_offsets [[buffer(0)]],
     device const uint*   out_col_indices [[buffer(1)]],

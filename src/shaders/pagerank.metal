@@ -1,9 +1,7 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// One thread per vertex. Reads the previous iteration's ranks (rank_in) plus
-// this vertex's in-neighbor list (CSR), writes the new rank to rank_out.
-// Buffers are double-buffered from the Rust side, so no atomics are needed.
+// One thread per vertex, double-buffered ranks, no atomics needed.
 kernel void pagerank_iteration(
     device const uint*  in_row_offsets   [[buffer(0)]],
     device const uint*  in_col_indices   [[buffer(1)]],

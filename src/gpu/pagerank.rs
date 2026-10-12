@@ -119,10 +119,7 @@ pub fn page_rank(graph: &Graph, config: &PageRankConfig) -> Vec<f32> {
     };
 
     for _ in 0..config.max_iterations {
-        // Dangling-mass reduction over n ranks is cheap relative to the O(E)
-        // neighbor scan the kernel does, so it's computed CPU-side by reading
-        // straight out of the shared rank_in buffer (unified memory — no
-        // explicit copy) instead of adding a second GPU reduction kernel.
+        // Dangling mass is O(n), cheap enough to compute CPU-side via unified memory.
         let dangling_sum: f32 = unsafe {
             let ptr = rank_in_buf.contents().as_ptr() as *const f32;
             let rank_in_view = std::slice::from_raw_parts(ptr, n);
